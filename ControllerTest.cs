@@ -28,11 +28,14 @@ public class ControllerTest : MonoBehaviour {
 #if !UNITY_EDITOR
     visible = false;
 #endif
-
-    KeyManager.subscribeKey(KeyCode.I, "controller_test", onToggle).setupDescription("afficher les infos manette");
+    
 	}
 
-  protected void onToggle(Key key){
+  void Update() {
+    if (Input.GetKeyUp(KeyCode.I)) onToggle();
+  }
+
+  protected void onToggle(){
     visible = !visible;
   }
 	
