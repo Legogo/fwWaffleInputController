@@ -15,9 +15,10 @@ using XInputDotNetPure;
 public class XinputControllerManager : ControllerManager {
 
   static public XinputControllerManager _input_xinput;
-  
-  override protected void build(){
-    base.build();
+
+  protected override void Awake()
+  {
+    base.Awake();
     _input_xinput = this;
   }
   
@@ -27,7 +28,7 @@ public class XinputControllerManager : ControllerManager {
     Controller360 c = null;
     GameObject obj = null;
     for(int i = 0; i < MAX_CONTROLLER; i++){
-      tempControllers[i] = null;      
+      tempControllers[i] = null;
       GamePadState gamepadState;
 
       try

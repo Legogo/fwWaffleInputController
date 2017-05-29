@@ -7,7 +7,7 @@ using System.Collections.Generic;
  * Manager will only update events on joystickNames[] size change
  * */
 
-public class ControllerManager : EngineObject {
+public class ControllerManager : MonoBehaviour {
 
   static public bool XINPUT; // defined at runtime
 
@@ -20,9 +20,7 @@ public class ControllerManager : EngineObject {
   public event Action<int> onControllerPlugged;
   public event Action<int> onControllerUnplugged;
   
-  protected override void build()
-  {
-    base.build();
+  virtual protected void Awake() {
     manager = this;
 
     tempControllers = new Controller360[MAX_CONTROLLER];
@@ -30,11 +28,9 @@ public class ControllerManager : EngineObject {
 
     updateControllers();
   }
-
-  protected override void updateSystem()
+  
+  void Update()
   {
-    base.updateSystem();
-
     int count = getSystemConnectedCount();
     if (count != connectedCount)
     {
