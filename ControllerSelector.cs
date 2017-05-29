@@ -9,7 +9,7 @@ public class ControllerSelector : MonoBehaviour {
   
   [RuntimeInitializeOnLoadMethod]
 	static protected void activePlatformManager(){
-
+    
     //déjà dans la scène ?
     ControllerManager cm = GameObject.FindObjectOfType<ControllerManager>();
     if (cm != null) return;
