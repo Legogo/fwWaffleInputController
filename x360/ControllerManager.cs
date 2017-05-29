@@ -7,7 +7,7 @@ using System.Collections.Generic;
  * Manager will only update events on joystickNames[] size change
  * */
 
-public class ControllerManager : MonoBehaviour {
+public class ControllerManager : EngineObject {
 
   static public bool XINPUT; // defined at runtime
 
@@ -20,20 +20,21 @@ public class ControllerManager : MonoBehaviour {
   public event Action<int> onControllerPlugged;
   public event Action<int> onControllerUnplugged;
   
-  virtual protected void Awake(){
-		manager = this;
+  protected override void build()
+  {
+    base.build();
+    manager = this;
 
     tempControllers = new Controller360[MAX_CONTROLLER];
     controllers = new Controller360[MAX_CONTROLLER];
 
-    //Debug.LogError("control manager awake");
-	}
-
-  void Start(){
-    updateControllers ();
+    updateControllers();
   }
 
-	void Update () {
+  protected override void updateSystem()
+  {
+    base.updateSystem();
+
     int count = getSystemConnectedCount();
     if (count != connectedCount)
     {
@@ -105,13 +106,13 @@ public class ControllerManager : MonoBehaviour {
   }
 
 	public void event__controllerPlugged(int controllerId){
-    Debug.Log("<color=gray>ControllerManager | event__controllerPlugged #"+controllerId+"</color>");
+    Debug.Log("<color=orange>ControllerManager</color> | event__controller<b>Plugged</b> #"+controllerId);
     //updateControllers();
     if (onControllerPlugged != null) onControllerPlugged(controllerId);
 	}
 
   public void event__controllerUnplugged(int controllerId){
-    Debug.Log("<color=gray>ControllerManager | event__controllerUnplugged #" + controllerId+"</color>");
+    Debug.Log("<color=orange>ControllerManager</color> | event__controller<b>Unplugged</b> #" + controllerId);
     updateControllers();
     if(onControllerUnplugged != null) onControllerUnplugged(controllerId);
 	}
@@ -140,8 +141,8 @@ public class ControllerManager : MonoBehaviour {
 			Controller360 c = controllers[i];
 			if(c == null) continue;
 			//ConsoleSurround.add("checking "+c.name);
-			if(c.released[Controller360.START])	return true;
-			if(c.released[Controller360.A])	return true;
+      if(c.isReleased(Controller360.ControllerButtons.START)) return true;
+			if(c.isReleased(Controller360.ControllerButtons.A)) return true;
 		}
 		return false;
 	}
@@ -149,13 +150,13 @@ public class ControllerManager : MonoBehaviour {
 	virtual public bool anyPressedBack(){
 		if(Input.GetKeyUp(KeyCode.Escape))	return true;
 		if(controllers.Length < 1)	return false;
-		for(int i = 0; i < controllers.Length; i++){ if(controllers[i] == null) continue; if(controllers[i].released[Controller360.BACK])	return true; }
+		for(int i = 0; i < controllers.Length; i++){ if(controllers[i] == null) continue; if(controllers[i].isReleased(Controller360.ControllerButtons.BACK)) return true; }
 		return false;
 	}
 
 	virtual public bool anyPressedStart(){
 		if(controllers.Length < 1)	return false;
-		for(int i = 0; i < controllers.Length; i++){ if(controllers[i] != null){ if(controllers[i].released[Controller360.START])	return true; } }
+		for(int i = 0; i < controllers.Length; i++){ if(controllers[i] != null){ if (controllers[i].isReleased(Controller360.ControllerButtons.START)) return true; } }
 		return false;
 	}
 	
@@ -164,8 +165,8 @@ public class ControllerManager : MonoBehaviour {
 		
 		foreach(Controller360 c in controllers){
 			if(c != null){
-				//Debug.Log("checking "+c.name);
-				if(c.released[Controller360.A])	return true;
+        //Debug.Log("checking "+c.name);
+        if (c.isReleased(Controller360.ControllerButtons.A)) return true;
 			}
 		}
 		return false;
@@ -207,6 +208,8 @@ public class ControllerManager : MonoBehaviour {
 		}
 		return count;
 	}
+
+  virtual public int getMaxControllerCount() { return MAX_CONTROLLER; }
 
   static protected ControllerManager manager;
 

@@ -58,15 +58,15 @@ public class XinputController : Controller360 {
 	
 	override protected void updateButtons(){
 		
-		updateKeyState(Controller360.LB, gamepadState.Buttons.LeftShoulder == ButtonState.Pressed);
-		updateKeyState(Controller360.RB, gamepadState.Buttons.RightShoulder == ButtonState.Pressed);
-		updateKeyState(Controller360.A, gamepadState.Buttons.A == ButtonState.Pressed);
-		updateKeyState(Controller360.X, gamepadState.Buttons.X == ButtonState.Pressed);
-		updateKeyState(Controller360.Y, gamepadState.Buttons.Y == ButtonState.Pressed);
-		updateKeyState(Controller360.B, gamepadState.Buttons.B == ButtonState.Pressed);
+		updateKeyState((int)Controller360.ControllerButtons.LB, gamepadState.Buttons.LeftShoulder == ButtonState.Pressed);
+		updateKeyState((int)Controller360.ControllerButtons.RB, gamepadState.Buttons.RightShoulder == ButtonState.Pressed);
+		updateKeyState((int)Controller360.ControllerButtons.A, gamepadState.Buttons.A == ButtonState.Pressed);
+		updateKeyState((int)Controller360.ControllerButtons.X, gamepadState.Buttons.X == ButtonState.Pressed);
+		updateKeyState((int)Controller360.ControllerButtons.Y, gamepadState.Buttons.Y == ButtonState.Pressed);
+		updateKeyState((int)Controller360.ControllerButtons.B, gamepadState.Buttons.B == ButtonState.Pressed);
 		
-		updateKeyState(Controller360.START, gamepadState.Buttons.Start == ButtonState.Pressed);
-		updateKeyState(Controller360.BACK, gamepadState.Buttons.Back == ButtonState.Pressed);
+		updateKeyState((int)Controller360.ControllerButtons.START, gamepadState.Buttons.Start == ButtonState.Pressed);
+		updateKeyState((int)Controller360.ControllerButtons.BACK, gamepadState.Buttons.Back == ButtonState.Pressed);
 	}
 	
   override protected void updateDpad(){
@@ -128,33 +128,38 @@ public class XinputController : Controller360 {
 		if(gamepadState.IsConnected){
 			content += "\nLS="+leftStickVector+" ("+leftStickVector.magnitude+")";
 			content += "\nRS="+rightStickVector+" ("+rightStickVector.magnitude+")";
-			//content += "\nDeadZone="+gamepadState;
+      //content += "\nDeadZone="+gamepadState;
 
-			content += "\nA="+state[A]+","+pressed[A]+","+released[A];
-			content += "\nB="+state[B]+","+pressed[B]+","+released[B];
-			content += "\nX="+state[X]+","+pressed[X]+","+released[X];
-			content += "\nY="+state[Y]+","+pressed[Y]+","+released[Y];
-			content += "\nLB="+state[LB]+","+pressed[LB]+","+released[LB];
-			content += "\nRB="+state[RB]+","+pressed[RB]+","+released[RB];
+      content += "\n" + getStatesToString(ControllerButtons.A);
+			content += "\n" + getStatesToString(ControllerButtons.B);
+      content += "\n" + getStatesToString(ControllerButtons.X);
+      content += "\n" + getStatesToString(ControllerButtons.Y);
+      content += "\n" + getStatesToString(ControllerButtons.LB);
+      content += "\n" + getStatesToString(ControllerButtons.RB);
 
-			content += "\nLT="+leftTrigger;
+      content += "\nLT="+leftTrigger;
 			content += "\nRT="+rightTrigger;
 
-			content += "\nSTART="+state[START]+","+pressed[START]+","+released[START];
-			content += "\nBACK="+state[BACK]+","+pressed[BACK]+","+released[BACK];
-		}else{
+			content += "\n" + getStatesToString(ControllerButtons.START);
+      content += "\n" + getStatesToString(ControllerButtons.BACK);
+    }
+    else{
 			content += "\nController is not connected";
 		}
 		
 		GUI.TextArea(new Rect((int)controllerIndex * 250f, 5f, 250f, 200f), content);
 	}
+
+  string getStatesToString(ControllerButtons button) {
+    return "\n"+button.ToString()+" = " + state[(int)button] + "," + pressed[(int)button] + "," + released[(int)button];
+  }
 	
 	static public XinputController add(int index){
 		GameObject obj = GameObject.Find("controller-"+index);
 		if(obj == null)	obj = new GameObject("controller-"+index);
 		else return obj.GetComponent<XinputController>();
 
-    Debug.Log("<color=gray>XinputController | add xinput controller # "+index+"</color>");
+    Debug.Log("<color=orange>XinputController</color> | add xinput <b>controller # " + index+"</b>");
 		return obj.AddComponent<XinputController>();
 	}
 }

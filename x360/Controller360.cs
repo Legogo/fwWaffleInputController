@@ -8,15 +8,8 @@ using System.Collections;
 
 public class Controller360 : MonoBehaviour {
 	
-	public const int LB = 0;
-	public const int RB = 1;
-	public const int A = 2;
-	public const int B = 3;
-	public const int X = 4;
-	public const int Y = 5;
-	public const int START = 6;
-	public const int BACK = 7;
-	
+  public enum ControllerButtons { LB = 0, RB = 1, A = 2, B = 3, X = 4, Y = 5, START = 6, BACK = 7 };
+
 	public const int QTY_KEYS = 8; // +1 de l'id de la dernière touche
 	public string[] map = new string[QTY_KEYS]; // all axis names
 	
@@ -41,8 +34,8 @@ public class Controller360 : MonoBehaviour {
 	public bool[] state = new bool[QTY_KEYS]; // currently pressed ?
 	
 	public int controllerIndex = 0;
-	protected int controllerId = -1;
-  protected int inputId = -1;
+	protected int controllerId = -1; // index dans le tableau des controllers
+  protected int inputId = -1; // index dans le InputManager de Unity
 	
 	public bool drawDebug = false;
 	
@@ -60,7 +53,7 @@ public class Controller360 : MonoBehaviour {
   }
 
   virtual public int getControllerId(){ return controllerId; }
-  virtual public int getInputId(){ return inputId; }
+  //virtual public int getInputId(){ return inputId; }
 
   virtual public bool isConnected(){
     if(controllerId > -1) return true;
@@ -150,14 +143,14 @@ public class Controller360 : MonoBehaviour {
 	}
 	
 	void updateAxisString(){
-    map[LB] = "LB_"+inputId;
-    map[RB] = "RB_"+inputId;
-    map[A] = "A_"+inputId;
-    map[B] = "B_"+inputId;
-    map[X] = "X_"+inputId;
-    map[Y] = "Y_"+inputId;
-    map[START] = "Start_"+inputId;
-    map[BACK] = "Back_"+inputId;
+    map[(int)ControllerButtons.LB] = "LB_"+inputId;
+    map[(int)ControllerButtons.RB] = "RB_"+inputId;
+    map[(int)ControllerButtons.A] = "A_"+inputId;
+    map[(int)ControllerButtons.B] = "B_"+inputId;
+    map[(int)ControllerButtons.X] = "X_"+inputId;
+    map[(int)ControllerButtons.Y] = "Y_"+inputId;
+    map[(int)ControllerButtons.START] = "Start_"+inputId;
+    map[(int)ControllerButtons.BACK] = "Back_"+inputId;
 	}
 	
   virtual protected void updateDpad(){
@@ -215,6 +208,7 @@ public class Controller360 : MonoBehaviour {
   virtual protected void updateButtons(){
 		for(int i = 0; i < map.Length; i++){
 			bool current = (Input.GetAxis(map[i]) > 0f);
+
 			if(pressed[i])	pressed[i] = false;
 			if(released[i])	released[i] = false;
 			
@@ -229,23 +223,22 @@ public class Controller360 : MonoBehaviour {
 		}
 	}
 
+  public bool isPressed(ControllerButtons button) { return pressed[(int)button]; }
+  public bool isReleased(ControllerButtons button) { return released[(int)button]; }
+  public bool isPressing(ControllerButtons button) { return state[(int)button]; }
+  
   public bool pressedStart(){
-    return released[Controller360.START];
+    return released[(int)ControllerButtons.START];
   }
 
-  virtual public float rightStickAngle(){
-    if(rightStickVector.magnitude <= 0f)  return 0f;
-    return Vector3.Angle(rightStickVector, previousRightStickVector);
-  }
-
-  public bool pressedAnyButton(int index){
-    if(Input.GetAxis("L_XAxis_"+index) != 0 || Input.GetAxis("L_YAxis_"+index) != 0)  return true;
-    if(Input.GetAxis("R_XAxis_"+index) != 0 || Input.GetAxis("R_YAxis_"+index) != 0)  return true;
-    if(Input.GetAxis("A_"+index) > 0f)  return true;
-    if(Input.GetAxis("B_"+index) > 0f)  return true;
-    if(Input.GetAxis("X_"+index) > 0f)  return true;
-    if(Input.GetAxis("Start_"+index) > 0f)  return true;
-    if(Input.GetAxis("Back_"+index) > 0f) return true;
+  public bool pressedAnyButton(int controllerIndex){
+    if(Input.GetAxis("L_XAxis_"+controllerIndex) != 0 || Input.GetAxis("L_YAxis_"+controllerIndex) != 0)  return true;
+    if(Input.GetAxis("R_XAxis_"+controllerIndex) != 0 || Input.GetAxis("R_YAxis_"+controllerIndex) != 0)  return true;
+    if(Input.GetAxis("A_"+controllerIndex) > 0f)  return true;
+    if(Input.GetAxis("B_"+controllerIndex) > 0f)  return true;
+    if(Input.GetAxis("X_"+controllerIndex) > 0f)  return true;
+    if(Input.GetAxis("Start_"+controllerIndex) > 0f)  return true;
+    if(Input.GetAxis("Back_"+controllerIndex) > 0f) return true;
     return false;
   }
 
@@ -253,14 +246,20 @@ public class Controller360 : MonoBehaviour {
 		return leftStickVector.magnitude;
 	}
 
-	virtual protected void OnGUI(){
+  virtual public float rightStickAngle()
+  {
+    if (rightStickVector.magnitude <= 0f) return 0f;
+    return Vector3.Angle(rightStickVector, previousRightStickVector);
+  }
+
+  virtual protected void OnGUI(){
 		if(!drawDebug) return;
 		
 		string content = name+" -- ControllerID="+controllerId+" -- Rdy ? "+isConnected();
 		if(isConnected()){
-			content += "\nA="+state[A]+","+pressed[A]+","+released[A];
-			content += "\nB="+state[B]+","+pressed[B]+","+released[B];
-			content += "\nSTART="+state[START]+","+pressed[START]+","+released[START];
+			content += "\nA="+state[(int)ControllerButtons.A]+","+pressed[(int)ControllerButtons.A]+","+released[(int)ControllerButtons.A];
+			content += "\nB="+state[(int)ControllerButtons.B]+","+pressed[(int)ControllerButtons.B]+","+released[(int)ControllerButtons.B];
+			content += "\nSTART="+state[(int)ControllerButtons.START]+","+pressed[(int)ControllerButtons.START]+","+released[(int)ControllerButtons.START];
 		}else{
 			content += "\nNo id assigned yet, controller is not ready";
 		}

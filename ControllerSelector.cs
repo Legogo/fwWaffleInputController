@@ -24,7 +24,7 @@ public class ControllerSelector : MonoBehaviour {
       ControllerManager.XINPUT = false;
 
     }else if(ControllerManager.isWindows()){
-      Debug.Log("<ControllerSelector> Is under WINDOWS, <b>using xinput dll</b>");
+      Debug.Log("<color=orange>ControllerSelector</color> | Is under WINDOWS, <b>using xinput dll</b>");
       _manager = UnityTools.getManager<XinputControllerManager>("[input]");
       
       ControllerManager.XINPUT = true;

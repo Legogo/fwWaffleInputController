@@ -14,13 +14,11 @@ using XInputDotNetPure;
 
 public class XinputControllerManager : ControllerManager {
 
-  static public XinputControllerManager xinputmanager;
-
+  static public XinputControllerManager _input_xinput;
   
-
-  override protected void Awake(){
-    base.Awake();
-    xinputmanager = this;
+  override protected void build(){
+    base.build();
+    _input_xinput = this;
   }
   
   /* au changement de scène les controller-X dégagent et sont recréé */
@@ -71,7 +69,7 @@ public class XinputControllerManager : ControllerManager {
 		
 		foreach(XinputController c in controllers){
 			if(c != null){
-				if(c.released[Controller360.START])	return true;
+				if(c.isReleased(Controller360.ControllerButtons.START))	return true;
 			}
 		}
 		return false;
@@ -82,8 +80,8 @@ public class XinputControllerManager : ControllerManager {
 		
 		foreach(XinputController c in controllers){
 			if(c != null){
-				//Debug.Log("checking "+c.name);
-				if(c.released[Controller360.A])	return true;
+        //Debug.Log("checking "+c.name);
+        if (c.isReleased(Controller360.ControllerButtons.A)) return true;
 			}
 		}
 		return false;
@@ -153,6 +151,6 @@ public class XinputControllerManager : ControllerManager {
 
   static public XinputControllerManager getXinputManager(){
     if(manager == null) return null; // devrait instance le manager ...
-    return xinputmanager;
+    return _input_xinput;
   }
 }

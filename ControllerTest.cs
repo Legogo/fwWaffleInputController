@@ -28,16 +28,11 @@ public class ControllerTest : MonoBehaviour {
 #if !UNITY_EDITOR
     visible = false;
 #endif
-    
+
+    //KeyManager.subscribeKey(KeyCode.I, "controller_test", onToggle).setupDescription("afficher les infos manette");
 	}
 
-  void Update() {
-    if (Input.GetKeyUp(KeyCode.I)) onToggle();
-  }
-
-  protected void onToggle(){
-    visible = !visible;
-  }
+  //protected void onToggle(Key key){ visible = !visible; }
 	
 	void OnGUI(){
 		if(!visible)	return;
@@ -75,27 +70,26 @@ public class ControllerTest : MonoBehaviour {
         viewSize.y = Screen.height * 0.25f + viewSize.height * 0.5f;
 			}
 			
-			int index = i;
-			output = "\nCONTROLLER "+index;
+			output = "\nCONTROLLER #"+i;
 
 			if(controls[i] == null)	continue;
 
 			if(!controls[i].isConnected()){
 				output += " IS NOT READY (controller id : "+controls[i].getControllerId()+")";
 			}else{
-        output += " (index="+i+",InputAxisId:"+controls[i].getInputId()+") ";
+        //output += " (index="+i+", InputAxisId:"+controls[i].getInputId()+") ";
         output += "\n"+((controls[i].isPrimary()) ? "PRIMARY" : "SECONDARY");
 				output += "\nLS = "+controls[i].leftStick[0]+","+controls[i].leftStick[1];
 				output += "\nRS = "+controls[i].rightStick[0]+","+controls[i].rightStick[1];
         output += "\nDPAD = "+controls[i].dPad[0]+","+controls[i].dPad[1];
         output += "\nLT = "+controls[i].leftTrigger;
 				output += "\nRT = "+controls[i].rightTrigger;
-				output += "\nLB = state:"+controls[i].state[Controller360.LB];
-				output += "\nRB = state:"+controls[i].state[Controller360.RB];
-				output += "\nA = state:"+controls[i].state[Controller360.A]+", release:"+controls[i].released[Controller360.A];
-				output += "\nB = state:"+controls[i].state[Controller360.B]+", release:"+controls[i].released[Controller360.B];
-				output += "\nSTART = state:"+controls[i].state[Controller360.START]+", release:"+controls[i].released[Controller360.START];
-				output += "\nBACK = state:"+controls[i].state[Controller360.BACK]+", release:"+controls[i].released[Controller360.BACK];
+				output += "\nLB = state:"+controls[i].isPressing(Controller360.ControllerButtons.LB);
+				output += "\nRB = state:"+controls[i].isPressing(Controller360.ControllerButtons.RB);
+        output += "\nA = state:" + controls[i].isPressing(Controller360.ControllerButtons.A);
+        output += "\nB = state:" + controls[i].isPressing(Controller360.ControllerButtons.B);
+        output += "\nSTART = state:" + controls[i].isPressing(Controller360.ControllerButtons.START);
+        output += "\nBACK = state:" + controls[i].isPressing(Controller360.ControllerButtons.BACK);
 			}
 			
 			GUI.Label(viewSize, output, style);
