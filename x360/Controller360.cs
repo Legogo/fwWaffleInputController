@@ -167,12 +167,12 @@ public class Controller360 : MonoBehaviour {
     leftStick[0] = Input.GetAxis("L_XAxis_"+inputId);
 		leftStickVector.x = leftStick[0];
     leftStick[1] = Input.GetAxis("L_YAxis_"+inputId);
-		leftStickVector.z = leftStick[1];
+		leftStickVector.y = leftStickVector.z = leftStick[1];
 
     rightStick[0] = Input.GetAxis("R_XAxis_"+inputId);
 		rightStickVector.x = rightStick[0];
     rightStick[1] = Input.GetAxis("R_YAxis_"+inputId);
-		rightStickVector.z = rightStick[1];
+    rightStickVector.y = rightStickVector.z = rightStick[1];
 	}
 
 	virtual protected void updateTriggers(){

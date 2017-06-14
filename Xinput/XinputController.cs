@@ -88,12 +88,12 @@ public class XinputController : Controller360 {
 		leftStick[0] = gamepadState.ThumbSticks.Left.X;
 		leftStickVector.x = leftStick[0];
 		leftStick[1] = gamepadState.ThumbSticks.Left.Y;
-		leftStickVector.z = -leftStick[1];
+		leftStickVector.y = leftStickVector.z = leftStick[1];
 		
 		rightStick[0] = gamepadState.ThumbSticks.Right.X;
 		rightStickVector.x = rightStick[0];
 		rightStick[1] = gamepadState.ThumbSticks.Right.Y;
-		rightStickVector.z = -rightStick[1];
+    rightStickVector.y = rightStickVector.z = rightStick[1];
 		
 		//Debug.Log(Input.GetAxis("L_XAxis_"+controllerId));
 	}
