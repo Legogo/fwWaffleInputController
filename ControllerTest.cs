@@ -18,6 +18,7 @@ public class ControllerTest : MonoBehaviour {
 	void Start(){
 
     manager = ControllerSelector.getInputManager();
+    if (manager == null) Debug.LogError("no input manager ?");
 
     controls = manager.getControllers();
 
