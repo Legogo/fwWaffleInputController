@@ -12,8 +12,6 @@ public class XinputController : Controller360 {
   PlayerIndex xinputIndex;
 	
 	override protected void Start () {
-
-
 		base.Start ();
 
 		string[] split = name.Split('-');
