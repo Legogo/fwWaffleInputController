@@ -151,7 +151,7 @@ public class XinputControllerManager : ControllerManager {
 	}
 
   static public XinputControllerManager getXinputManager(){
-    if(manager == null) return null; // devrait instance le manager ...
+    if (_input_xinput == null) _input_xinput = GameObject.FindObjectOfType<XinputControllerManager>();
     return _input_xinput;
   }
 }

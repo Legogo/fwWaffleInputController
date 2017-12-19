@@ -17,10 +17,18 @@ public class ControllerManager : MonoBehaviour {
   protected Controller360[] controllers;
   protected Controller360[] tempControllers;
 
-  public event Action<int> onControllerPlugged;
-  public event Action<int> onControllerUnplugged;
+  protected Action<int> onControllerPlugged;
+  protected Action<int> onControllerUnplugged;
   
-  virtual protected void Awake() {
+  virtual protected void Awake()
+  {
+    ControllerManager[] cms = GameObject.FindObjectsOfType<ControllerManager>();
+    if (cms.Length > 1)
+    {
+      Debug.LogError("multiple controller manager in scene");
+      return;
+    }
+
     manager = this;
 
     tempControllers = new Controller360[MAX_CONTROLLER];
@@ -29,6 +37,15 @@ public class ControllerManager : MonoBehaviour {
     updateControllers();
   }
   
+  public void subscribeToEvents(Action<int> plug, Action<int> unplug) {
+    onControllerPlugged += plug;
+    onControllerUnplugged += unplug;
+
+    Debug.Log(GetType()+" "+name+" | someone subscribed to controller plugging events", gameObject);
+    Debug.Log(onControllerPlugged);
+    Debug.Log(onControllerUnplugged);
+  }
+
   void Update()
   {
     int count = getSystemConnectedCount();
@@ -102,14 +119,16 @@ public class ControllerManager : MonoBehaviour {
   }
 
 	public void event__controllerPlugged(int controllerId){
-    Debug.Log("<color=orange>ControllerManager</color> | event__controller<b>Plugged</b> #"+controllerId);
+    Debug.Log("<color=orange>" + GetType() + "</color> | event__controller<b>Plugged</b> #" + controllerId);
     //updateControllers();
+    
     if (onControllerPlugged != null) onControllerPlugged(controllerId);
 	}
 
   public void event__controllerUnplugged(int controllerId){
-    Debug.Log("<color=orange>ControllerManager</color> | event__controller<b>Unplugged</b> #" + controllerId);
+    Debug.Log("<color=orange>"+GetType()+"</color> | event__controller<b>Unplugged</b> #" + controllerId);
     updateControllers();
+    
     if(onControllerUnplugged != null) onControllerUnplugged(controllerId);
 	}
 

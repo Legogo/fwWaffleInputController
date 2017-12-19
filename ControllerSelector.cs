@@ -14,9 +14,6 @@ public class ControllerSelector : MonoBehaviour {
     ControllerManager cm = GameObject.FindObjectOfType<ControllerManager>();
     if (cm != null) return;
     
-    //ControllerManager cm = UnityTools.getManager<ControllerManager>("[input]");
-    //if (cm != null) return;
-
     if (ControllerManager.isMac()){
 			Debug.Log("<ControllerSelector> Is under MACOS, using unity inputManager");
       _manager = getManager<ControllerManager>("[input]");
