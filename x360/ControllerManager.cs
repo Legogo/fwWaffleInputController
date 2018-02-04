@@ -41,9 +41,9 @@ public class ControllerManager : MonoBehaviour {
     onControllerPlugged += plug;
     onControllerUnplugged += unplug;
 
-    Debug.Log(GetType()+" "+name+" | someone subscribed to controller plugging events", gameObject);
-    Debug.Log(onControllerPlugged);
-    Debug.Log(onControllerUnplugged);
+    //Debug.Log(GetType()+" "+name+" | someone subscribed to controller plugging events", gameObject);
+    //Debug.Log(onControllerPlugged);
+    //Debug.Log(onControllerUnplugged);
   }
 
   void Update()
@@ -141,6 +141,8 @@ public class ControllerManager : MonoBehaviour {
   }
 
   public Controller360 getControllerById(int id){
+    if (controllers == null) Debug.LogError("no controllers array created");
+    //Debug.Log("asking for controller of id " + id+" / array has "+controllers.Length);
     return controllers[id];
   }
 
